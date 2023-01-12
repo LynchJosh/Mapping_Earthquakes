@@ -29,25 +29,59 @@ let map = L.map('mapid', {
 
 L.control.layers(baseMaps).addTo(map); 
 
+function styleInfo(feature) {
+  return{
+    opacity: 1,
+    fillOpacity: 1,
+    fillColor: "#ffae42",
+    color: "#000000",
+    radius: getRadius(feature.properties.mag),
+    stroke: true,
+    weight: 0.5
+  };
+}
+
+function getRadius(magnitude) {
+  if (magnitude ===0) {
+    return 1;
+  }
+  return magnitude * 4;
+}
 
 
 
 
-
-// Create a style for the lines.
-var mapStyle = {
-  color: "purple",
-  fillColor: "yellow",
-  fillOpacity: 0.1,
-  weight: 1.2
-};
+// //Create a style for the lines.
+// let mapStyle = {
+//   color: "purple",
+//   fillColor: "yellow",
+//   fillOpacity: 0.1,
+//   weight: 1.2
+// };
 
 
 // Grabbing our GeoJSON data.
 d3.json("https://earthquake.usgs.gov/earthquakes/feed/v1.0/summary/all_week.geojson").then(function(data) {
 // Creating a GeoJSON layer with the retrieved data.
-  L.geoJSON(data).addTo(map);
-});
+L.geoJSON(data, {
+
+  // We turn each feature into a circleMarker on the map.
+  
+  pointToLayer: function(feature, latlng) {
+              console.log(data);
+              return L.circleMarker(latlng);
+          },
+      style: styleInfo
+      }).addTo(map);
+  });
+
+
+
+
+
+
+
+
 
 // d3.json(torontoHoods).then(function(data) {
 //   L.geoJSON(data, {
